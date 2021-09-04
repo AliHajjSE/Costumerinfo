@@ -5,6 +5,7 @@ import com.example.costumerinfo.exception.ResourceNotFoundException;
 import com.example.costumerinfo.repository.CostumerRepository;
 import com.example.costumerinfo.service.CostumerService;
 //import com.example.costumerinfo.service.TwilioService;
+import com.example.costumerinfo.service.GooglePhoneLib;
 import com.example.costumerinfo.service.TwilioService;
 import com.twilio.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,22 @@ public class CostmerController {
     @Autowired
     private CostumerRepository costumerRepository;
     private TwilioService service;
+    private GooglePhoneLib phoneLib;
 
     @GetMapping("/costumers")
     public List<Costumer> getAllCostumers(){
         return costumerRepository.findAll();
     }
+
     @PostMapping("/costumers")
-    public Costumer createCostumer(@RequestBody Costumer costumer){
-        return costumerRepository.save(costumer);
+    public ResponseEntity<Costumer> createCostumer(@RequestBody Costumer costumer){
+        boolean check=phoneLib.isPhoneNumberValid(costumer.getPhoneNumber());
+        if(check){
+            Costumer savedCostumer= costumerRepository.save(costumer);
+            return ResponseEntity.ok(savedCostumer);
+        }
+        return new ResponseEntity<Costumer>(HttpStatus.BAD_REQUEST);
+
     }
 
     @PutMapping("/costumers/{id}")
@@ -49,9 +58,12 @@ public class CostmerController {
         if(!costumerDetails.getAddress().isEmpty()) {
             costumer.setAddress(costumerDetails.getAddress());
         }
-
-        Costumer updatedCostumer = costumerRepository.save(costumer);
-        return ResponseEntity.ok(updatedCostumer);
+        boolean check=phoneLib.isPhoneNumberValid(costumer.getPhoneNumber());
+        if(check){
+            Costumer updatedCostumer = costumerRepository.save(costumer);
+            return ResponseEntity.ok(updatedCostumer);
+        }
+        return new ResponseEntity<Costumer>(HttpStatus.BAD_REQUEST);
     }
     @DeleteMapping("/costumers/{id}")
     public ResponseEntity<Map<String,Boolean>> deleteCostumer(@PathVariable int id){
