@@ -12,7 +12,7 @@ import javax.persistence.*;
 public class Costumer {
     @Id
     @GeneratedValue
-     private int id;
+    private int id;
     private String name;
     private String phoneNumber;
     private String address;

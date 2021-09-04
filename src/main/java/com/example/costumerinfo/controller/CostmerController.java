@@ -2,8 +2,8 @@ package com.example.costumerinfo.controller;
 
 import com.example.costumerinfo.entity.Costumer;
 import com.example.costumerinfo.exception.ResourceNotFoundException;
-import com.example.costumerinfo.repository.CostumerRepository;
 
+import com.example.costumerinfo.service.CostumerService;
 import com.example.costumerinfo.service.GooglePhoneLib;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,20 +19,20 @@ import java.util.Map;
 @RestController
 public class CostmerController {
     @Autowired
-    private CostumerRepository costumerRepository;
+    private CostumerService costumerService;
 
     private GooglePhoneLib phoneLib;
 
     @GetMapping("/costumers")
     public List<Costumer> getAllCostumers(){
-        return costumerRepository.findAll();
+        return costumerService.getCostumers();
     }
 
     @PostMapping("/costumers")
     public ResponseEntity<Costumer> createCostumer(@RequestBody Costumer costumer){
         boolean check=phoneLib.isPhoneNumberValid(costumer.getPhoneNumber());
         if(check){
-            Costumer savedCostumer= costumerRepository.save(costumer);
+            Costumer savedCostumer= costumerService.saveCostumer(costumer);
             return ResponseEntity.ok(savedCostumer);
         }
         return new ResponseEntity<Costumer>(HttpStatus.BAD_REQUEST);
@@ -41,8 +41,7 @@ public class CostmerController {
 
     @PutMapping("/costumers/{id}")
     public ResponseEntity<Costumer> updateCostumer(@PathVariable int id, @RequestBody Costumer costumerDetails){
-        Costumer costumer = costumerRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Costumer not exist with id :"+ id));
+        Costumer costumer = costumerService.getCostumerById(id);
 
         if(!costumerDetails.getName().isEmpty()){
             costumer.setName(costumerDetails.getName());
@@ -56,16 +55,15 @@ public class CostmerController {
         }
         boolean check=phoneLib.isPhoneNumberValid(costumer.getPhoneNumber());
         if(check){
-            Costumer updatedCostumer = costumerRepository.save(costumer);
+            Costumer updatedCostumer = costumerService.saveCostumer(costumer);
             return ResponseEntity.ok(updatedCostumer);
         }
         return new ResponseEntity<Costumer>(HttpStatus.BAD_REQUEST);
     }
     @DeleteMapping("/costumers/{id}")
     public ResponseEntity<Map<String,Boolean>> deleteCostumer(@PathVariable int id){
-        Costumer costumer = costumerRepository.findById(id)
-                .orElseThrow(()-> new ResourceNotFoundException("Costumer not exist with id :"+ id));
-        costumerRepository.delete(costumer);
+
+        costumerService.deleteCostumer(id);
         Map<String,Boolean> response = new HashMap<>();
 
         response.put("deleted",Boolean.TRUE);
