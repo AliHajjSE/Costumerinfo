@@ -3,16 +3,12 @@ package com.example.costumerinfo.controller;
 import com.example.costumerinfo.entity.Costumer;
 import com.example.costumerinfo.exception.ResourceNotFoundException;
 import com.example.costumerinfo.repository.CostumerRepository;
-import com.example.costumerinfo.service.CostumerService;
-//import com.example.costumerinfo.service.TwilioService;
+
 import com.example.costumerinfo.service.GooglePhoneLib;
-import com.example.costumerinfo.service.TwilioService;
-import com.twilio.exception.ApiException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +20,7 @@ import java.util.Map;
 public class CostmerController {
     @Autowired
     private CostumerRepository costumerRepository;
-    private TwilioService service;
+
     private GooglePhoneLib phoneLib;
 
     @GetMapping("/costumers")
