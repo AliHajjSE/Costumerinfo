@@ -21,14 +21,11 @@ function App()  {
                     <Route path = "/add-costumer" component = {CreateCostumerComponent}></Route>
                     <Route path = "/update-costumer/:id" component = {UpdateCostumerComponent}></Route>
                     <Route path = "/delete-costumer/:id" component = {ListCosmtumerComponent}></Route>
-
                </Switch>
             </div>
           </div>
        </Router>
     </div>
-
-    
   );
 }
 

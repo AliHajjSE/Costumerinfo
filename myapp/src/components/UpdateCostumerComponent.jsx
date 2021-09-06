@@ -15,22 +15,19 @@ export default class UpdateCostumerComponent extends Component {
         this.updateCostumer = this.updateCostumer.bind(this);
     }
 
-componentDidMount(){
+    componentDidMount(){
         CostumerService.getCostumersById(this.state.id).then((res) =>{
-         let costumer = res.data;
-         this.setState({
-             name: costumer.name,
-             phoneNumber: costumer.phoneNumber,
-             address: costumer.address
-            
-         });
+            let costumer = res.data;
+            this.setState({
+                name: costumer.name,
+                phoneNumber: costumer.phoneNumber,
+                address: costumer.address
+            });
         });
     }
 
         updateCostumer = (e)=> {
-        e.preventDefault();
         let costumer = {name: this.state.name, phoneNumber: this.state.phoneNumber,address: this.state.address};
-        console.log('costumer => ' + JSON.stringify(costumer));
         CostumerService.updateCostumer(costumer, this.state.id).then(res =>{
         this.props.history.push('/costumers');
         });

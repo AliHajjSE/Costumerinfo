@@ -15,9 +15,7 @@ export default class CreateCostumerComponent extends Component {
     }
 
         saveCostumer = (e)=> {
-        e.preventDefault();
         let costumer = {name: this.state.name, phoneNumber: this.state.phoneNumber,address: this.state.address};
-        console.log('costumer => ' + JSON.stringify(costumer));
 
         CostumerService.createCostumer(costumer).then(res => {
             this.props.history.push('/costumers');
